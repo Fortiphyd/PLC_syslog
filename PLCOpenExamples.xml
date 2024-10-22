@@ -1,0 +1,1434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP14" creationDateTime="2024-10-22T09:14:15.6442521" />
+  <contentHeader name="gas_plant.project" modificationDateTime="2024-10-22T09:13:57.2609233">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation>
+          <property name="Project" type="string">gas_plant</property>
+        </ProjectInformation>
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes>
+      <dataType name="Facility">
+        <baseType>
+          <enum>
+            <values>
+              <value name="kernel" value="0" />
+              <value name="user" value="1" />
+              <value name="mail" value="2" />
+              <value name="system" value="3" />
+              <value name="sec_1" value="4" />
+              <value name="syslogd" value="5" />
+              <value name="printer" value="6" />
+              <value name="network" value="7" />
+              <value name="uucp" value="8" />
+              <value name="clock_1" value="9" />
+              <value name="sec_2" value="10" />
+              <value name="ftp" value="11" />
+              <value name="ntp" value="12" />
+              <value name="audit" value="13" />
+              <value name="alert" value="14" />
+              <value name="clock_2" value="15" />
+              <value name="local0" value="16" />
+              <value name="local1" value="17" />
+              <value name="local2" value="18" />
+              <value name="local3" value="19" />
+              <value name="local4" value="20" />
+              <value name="local5" value="21" />
+              <value name="local6" value="22" />
+              <value name="local7" value="23" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+              <Attribute Name="strict" Value="" />
+            </Attributes>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>dca4d95a-4041-4ef1-ac61-4c557f5897ce</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="Severity">
+        <baseType>
+          <enum>
+            <values>
+              <value name="Emergency" value="0" />
+              <value name="Alert" value="1" />
+              <value name="Critical" value="2" />
+              <value name="Error" value="3" />
+              <value name="Warning" value="4" />
+              <value name="Notice" value="5" />
+              <value name="Info" value="6" />
+              <value name="Debug" value="7" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+              <Attribute Name="strict" Value="" />
+            </Attributes>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>c5d97f8c-de07-4e3d-bb4d-aee229824a07</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+    </dataTypes>
+    <pous>
+      <pou name="SpacePadDay" pouType="function">
+        <interface>
+          <returnType>
+            <string length="3" />
+          </returnType>
+          <inputVars>
+            <variable name="input_int">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="temp_len">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">SpacePadDay := UINT_TO_STRING(input_int);
+temp_len := INT_TO_USINT(len(SpacePadDay));
+
+IF temp_len = 1 THEN
+	SpacePadDay := INSERT(SpacePadDay, ' ', 0);
+END_IF
+
+SpacePadDay := CONCAT(SpacePadDay, ' ');</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>e75c6d76-f69d-407e-aebf-e606b70bed27</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="syslogMessage" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="facility">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="severity">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="host">
+              <type>
+                <string length="64" />
+              </type>
+            </variable>
+            <variable name="tag">
+              <type>
+                <string length="48" />
+              </type>
+            </variable>
+            <variable name="msg">
+              <type>
+                <string length="256" />
+              </type>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="prival">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+            <variable name="t">
+              <type>
+                <array>
+                  <dimension lower="0" upper="31" />
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="index">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="temp_str">
+              <type>
+                <string length="8" />
+              </type>
+            </variable>
+            <variable name="send_result">
+              <type>
+                <pointer>
+                  <baseType>
+                    <derived name="RTS_IEC_RESULT" />
+                  </baseType>
+                </pointer>
+              </type>
+            </variable>
+            <variable name="sock_result">
+              <type>
+                <pointer>
+                  <baseType>
+                    <derived name="RTS_IEC_RESULT" />
+                  </baseType>
+                </pointer>
+              </type>
+            </variable>
+            <variable name="socket">
+              <type>
+                <derived name="RTS_IEC_HANDLE" />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="message">
+              <type>
+                <array>
+                  <dimension lower="0" upper="512" />
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// SYSLOG-MSG      = HEADER SP STRUCTURED-DATA [SP MSG]
+// HEADER          = PRI VERSION SP TIMESTAMP SP HOSTNAME SP APP-NAME SP PROCID SP MSGID
+
+// PRI             = "&lt;" PRIVAL "&gt;"
+// PRIVAL          = 1*3DIGIT ; range 0 .. 191
+prival := INT_TO_USINT(SHL(facility, 3) + (severity AND 16#07));
+index := 0;
+temp_str := '&lt;';
+my_memcopy(ADR(message[index]), 1, ADR(temp_str));
+index := index + 1;
+temp_str := USINT_TO_STRING(prival);
+my_memcopy(ADR(message[index]), len(temp_str), ADR(temp_str));
+index := index + len(temp_str);
+temp_str := '&gt;';
+my_memcopy(ADR(message[index]), 1, ADR(temp_str));
+index := index + 1;
+
+
+t := Timestamp();
+my_memcopy(ADR(message[index]), 15, ADR(t));
+index := index + 15;
+
+temp_str := ' ';
+my_memcopy(ADR(message[index]), 1, ADR(temp_str));
+index := index + 1;
+
+my_memcopy(ADR(message[index]), len(host), ADR(host));
+index := index + len(host);
+
+temp_str := ' ';
+my_memcopy(ADR(message[index]), 1, ADR(temp_str));
+index := index + 1;
+
+my_memcopy(ADR(message[index]), len(tag), ADR(tag));
+index := index + len(tag);
+
+temp_str := ': ';
+my_memcopy(ADR(message[index]), 2, ADR(temp_str));
+index := index + 2;
+
+my_memcopy(ADR(message[index]), len(msg), ADR(msg));
+index := index + len(msg);
+
+IF socket = 0 THEN
+	socket := SysSockCreate(iAddressFamily:= SOCKET_AF_INET, diType:=SOCKET_DGRAM , diProtocol:= 0, pResult:= sock_result);
+END_IF
+	
+SysSockSendToUdp(
+	hSocketUdp:= socket, 
+	diPort:= 514, 
+	szDestAddress:= '192.168.95.5', 
+	pbyData:= ADR(message), 
+	diDataSize:= index, 
+	pResult:= send_result);</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>1fa7320f-c4bd-426e-99cf-f4b726fd152f</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="Timestamp" pouType="function">
+        <interface>
+          <returnType>
+            <array>
+              <dimension lower="0" upper="31" />
+              <baseType>
+                <BYTE />
+              </baseType>
+            </array>
+          </returnType>
+          <localVars>
+            <variable name="t_stamp">
+              <type>
+                <derived name="SYSTIMEDATE" />
+              </type>
+            </variable>
+            <variable name="utc">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="result">
+              <type>
+                <derived name="RTS_IEC_RESULT" />
+              </type>
+            </variable>
+            <variable name="index">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+            <variable name="temp_str">
+              <type>
+                <string length="8" />
+              </type>
+            </variable>
+            <variable name="temp_len">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+            <variable name="months">
+              <type>
+                <array>
+                  <dimension lower="1" upper="12" />
+                  <baseType>
+                    <string />
+                  </baseType>
+                </array>
+              </type>
+              <initialValue>
+                <arrayValue>
+                  <value>
+                    <simpleValue value="'Jan'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Feb'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Mar'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Apr'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'May'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Jun'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Jul'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Aug'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Sep'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Oct'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Nov'" />
+                  </value>
+                  <value>
+                    <simpleValue value="'Dec'" />
+                  </value>
+                </arrayValue>
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">
+index := 0;
+utc := SysTimeRtcGet(result);
+SysTimeRtcConvertUtcToDate(dwTimestampUtc:= utc, pDate:= t_stamp);
+
+temp_str := months[t_stamp.wMonth];
+my_memcopy(ADR(Timestamp[index]), 3, ADR(temp_str));
+index := index + 3;
+
+temp_str := ' ';
+my_memcopy(ADR(Timestamp[index]), 1, ADR(temp_str));
+index := index + 1;
+
+
+
+// DATE-MDAY       = 2DIGIT  ; 01-28, 01-29, 01-30, 01-31 based on month/year
+temp_str := SpacePadDay(t_stamp.wDay);
+my_memcopy(ADR(Timestamp[index]), 3, ADR(temp_str));
+index := index + 3;
+
+temp_str := ZeroPadInt(t_stamp.wHour, 2);
+my_memcopy(ADR(Timestamp[index]), 2, ADR(temp_str));
+index := index + 2;
+
+temp_str := ':';
+my_memcopy(ADR(Timestamp[index]), 1, ADR(temp_str));
+index := index + 1;
+
+// TIME-MINUTE     = 2DIGIT  ; 00-59
+temp_str := ZeroPadInt(UINT_TO_USINT(t_stamp.wMinute), 2);
+my_memcopy(ADR(Timestamp[index]), 2, ADR(temp_str));
+index := index + 2;
+
+temp_str := ':';
+my_memcopy(ADR(Timestamp[index]), 1, ADR(temp_str));
+index := index + 1;
+
+// TIME-SECOND     = 2DIGIT  ; 00-59
+temp_str := ZeroPadInt(UINT_TO_USINT(t_stamp.wSecond), 2);
+my_memcopy(ADR(Timestamp[index]), 2, ADR(temp_str));
+index := index + 2;
+index := index + 1;</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>c23e6e59-5d0f-42d0-8496-4718540ad8f1</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="ZeroPadInt" pouType="function">
+        <interface>
+          <returnType>
+            <string length="4" />
+          </returnType>
+          <inputVars>
+            <variable name="input_int">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="length">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="temp_str">
+              <type>
+                <string length="4" />
+              </type>
+            </variable>
+            <variable name="temp_len">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+            <variable name="zeroes">
+              <type>
+                <USINT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">ZeroPadInt := UINT_TO_STRING(input_int);
+temp_len := INT_TO_USINT(len(ZeroPadInt));
+
+zeroes := length - temp_len;
+WHILE zeroes &gt; 0 DO
+	zeroes := zeroes - 1;
+	ZeroPadInt := INSERT(ZeroPadInt, '0', 0);
+END_WHILE
+
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>46407487-b642-427e-a5e6-cff6c411ed48</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="my_memcopy" pouType="function">
+        <interface>
+          <returnType>
+            <UINT />
+          </returnType>
+          <inputVars>
+            <variable name="dest_ptr">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+            </variable>
+            <variable name="size">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="data_item">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="index_pointer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+            </variable>
+            <variable name="data_pointer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+            </variable>
+            <variable name="i">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="copied">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">// Copyright 2022 Fortiphyd Logic Inc
+// All rights reserved
+//
+
+index_pointer := dest_ptr;
+data_pointer := data_item;
+FOR i := 0 TO size DO
+	index_pointer^ := data_pointer^;
+	index_pointer := index_pointer + 1;
+	data_pointer := data_pointer + 1;
+	copied := copied + 1;
+END_FOR
+my_memcopy := copied;
+RETURN;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>b5cbb681-b67f-47d5-9d95-e08cd2905e30</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="SyslogExamples" pouType="program">
+        <interface>
+          <localVars>
+            <variable name="syslogMessage_0">
+              <type>
+                <derived name="syslogMessage" />
+              </type>
+            </variable>
+            <variable name="max_safe_rpm">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="1100" />
+              </initialValue>
+            </variable>
+            <variable name="TON_0">
+              <type>
+                <derived name="TON" />
+              </type>
+            </variable>
+            <variable name="system_bytes_rx">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="network_rx1">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="network_rx2">
+              <type>
+                <UDINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="bandwidth">
+              <type>
+                <UDINT />
+              </type>
+            </variable>
+            <variable name="syslogMessage_1">
+              <type>
+                <derived name="syslogMessage" />
+              </type>
+            </variable>
+            <variable name="previous_process_state">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="current_process_state">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="syslogMessage_2">
+              <type>
+                <derived name="syslogMessage" />
+              </type>
+            </variable>
+            <variable name="state_changed">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <LD>
+            <leftPowerRail localId="0">
+              <position x="0" y="0" />
+              <connectionPointOut formalParameter="none" />
+            </leftPowerRail>
+            <comment localId="1" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Simple example of safety threshold alert
+</xhtml>
+              </content>
+            </comment>
+            <vendorElement localId="2">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <inVariable localId="5">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>IOVars.diesel_target_rpm[0]</expression>
+            </inVariable>
+            <inVariable localId="6">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>1100</expression>
+            </inVariable>
+            <block localId="4" typeName="GT">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="0" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="5" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In3">
+                  <connectionPointIn>
+                    <connection refLocalId="6" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="Out1">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <inVariable localId="7">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>Facility.local0</expression>
+            </inVariable>
+            <inVariable localId="8">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>severity.Warning</expression>
+            </inVariable>
+            <inVariable localId="9">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>'codesysPLC'</expression>
+            </inVariable>
+            <inVariable localId="10">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>'diesel_rpm0'</expression>
+            </inVariable>
+            <inVariable localId="11">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>'RPM setpoint exceeded 1100'</expression>
+            </inVariable>
+            <block localId="3" typeName="syslogMessage" instanceName="syslogMessage_0">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="4" formalParameter="Out1" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="facility">
+                  <connectionPointIn>
+                    <connection refLocalId="7" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="severity">
+                  <connectionPointIn>
+                    <connection refLocalId="8" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="host">
+                  <connectionPointIn>
+                    <connection refLocalId="9" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="tag">
+                  <connectionPointIn>
+                    <connection refLocalId="10" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="msg">
+                  <connectionPointIn>
+                    <connection refLocalId="11" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">functionblock</CallType>
+                </data>
+              </addData>
+            </block>
+            <comment localId="12" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">More complex example of watching network bytes received, 
+you need to replace system_bytes_rx with your vendor's system call for bytes rx.
+
+First, sample network bytes rx every 1 second and subtract previous
+sample to get bytes/second.</xhtml>
+              </content>
+            </comment>
+            <vendorElement localId="13">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="15" negated="true" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>TON_0.Q</variable>
+            </contact>
+            <inVariable localId="16">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>t#1s</expression>
+            </inVariable>
+            <block localId="14" typeName="TON" instanceName="TON_0">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="IN" negated="true">
+                  <connectionPointIn>
+                    <connection refLocalId="15" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="PT">
+                  <connectionPointIn>
+                    <connection refLocalId="16" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="Q">
+                  <connectionPointOut />
+                </variable>
+                <variable formalParameter="ET">
+                  <connectionPointOut>
+                    <expression>???</expression>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">functionblock</CallType>
+                </data>
+              </addData>
+            </block>
+            <comment localId="17" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </content>
+            </comment>
+            <vendorElement localId="18">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="20" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>TON_0.Q</variable>
+            </contact>
+            <inVariable localId="21">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>network_rx2</expression>
+            </inVariable>
+            <block localId="19" typeName="MOVE">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="20" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="21" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+                <variable formalParameter="Out2">
+                  <connectionPointOut>
+                    <expression>network_rx1</expression>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <comment localId="22" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </content>
+            </comment>
+            <vendorElement localId="23">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="25" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>TON_0.Q</variable>
+            </contact>
+            <inVariable localId="26">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>system_bytes_rx</expression>
+            </inVariable>
+            <block localId="24" typeName="MOVE">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="25" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="26" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+                <variable formalParameter="Out2">
+                  <connectionPointOut>
+                    <expression>network_rx2</expression>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <comment localId="27" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </content>
+            </comment>
+            <vendorElement localId="28">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="30" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>TON_0.Q</variable>
+            </contact>
+            <inVariable localId="31">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>network_rx2</expression>
+            </inVariable>
+            <inVariable localId="32">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>network_rx1</expression>
+            </inVariable>
+            <block localId="29" typeName="SUB">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="30" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="31" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In3">
+                  <connectionPointIn>
+                    <connection refLocalId="32" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+                <variable formalParameter="Out2">
+                  <connectionPointOut>
+                    <expression>bandwidth</expression>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <comment localId="33" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </content>
+            </comment>
+            <vendorElement localId="34">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="36" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>TON_0.Q</variable>
+            </contact>
+            <inVariable localId="37">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>facility.local0</expression>
+            </inVariable>
+            <inVariable localId="38">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>Severity.Warning</expression>
+            </inVariable>
+            <inVariable localId="39">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>'codesysPLC'</expression>
+            </inVariable>
+            <inVariable localId="40">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>'Network'</expression>
+            </inVariable>
+            <inVariable localId="41">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>'Bandwidth exceeded 1MBps'</expression>
+            </inVariable>
+            <block localId="35" typeName="syslogMessage" instanceName="syslogMessage_1">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="36" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="facility">
+                  <connectionPointIn>
+                    <connection refLocalId="37" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="severity">
+                  <connectionPointIn>
+                    <connection refLocalId="38" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="host">
+                  <connectionPointIn>
+                    <connection refLocalId="39" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="tag">
+                  <connectionPointIn>
+                    <connection refLocalId="40" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="msg">
+                  <connectionPointIn>
+                    <connection refLocalId="41" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">functionblock</CallType>
+                </data>
+              </addData>
+            </block>
+            <comment localId="42" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">Simple example comparing the current process state with the previous one and logging the change.
+The message string could include the state values using your system's string concat functions</xhtml>
+              </content>
+            </comment>
+            <vendorElement localId="43">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <inVariable localId="46">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>current_process_state</expression>
+            </inVariable>
+            <inVariable localId="47">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>previous_process_state</expression>
+            </inVariable>
+            <block localId="45" typeName="NE">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="0" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="46" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In3">
+                  <connectionPointIn>
+                    <connection refLocalId="47" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="Out1">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <inVariable localId="48">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>facility.local0</expression>
+            </inVariable>
+            <inVariable localId="49">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>severity.Notice</expression>
+            </inVariable>
+            <inVariable localId="50">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>'codesysPLC'</expression>
+            </inVariable>
+            <inVariable localId="51">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>'ProcessState'</expression>
+            </inVariable>
+            <inVariable localId="52">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>'Process state changed'</expression>
+            </inVariable>
+            <block localId="44" typeName="syslogMessage" instanceName="syslogMessage_2">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="45" formalParameter="Out1" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="facility">
+                  <connectionPointIn>
+                    <connection refLocalId="48" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="severity">
+                  <connectionPointIn>
+                    <connection refLocalId="49" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="host">
+                  <connectionPointIn>
+                    <connection refLocalId="50" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="tag">
+                  <connectionPointIn>
+                    <connection refLocalId="51" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="msg">
+                  <connectionPointIn>
+                    <connection refLocalId="52" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">functionblock</CallType>
+                </data>
+              </addData>
+            </block>
+            <coil localId="53" negated="false" storage="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="44" formalParameter="ENO" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>state_changed</variable>
+            </coil>
+            <comment localId="54" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </content>
+            </comment>
+            <vendorElement localId="55">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="57" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>state_changed</variable>
+            </contact>
+            <inVariable localId="58">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>current_process_state</expression>
+            </inVariable>
+            <block localId="56" typeName="MOVE">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="57" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="58" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+                <variable formalParameter="Out2">
+                  <connectionPointOut>
+                    <expression>previous_process_state</expression>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <rightPowerRail localId="2147483646">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="3" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">2</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+                <connection refLocalId="14" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">3</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+                <connection refLocalId="19" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">4</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+                <connection refLocalId="24" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">5</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+                <connection refLocalId="29" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">6</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+                <connection refLocalId="35" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">7</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+                <connection refLocalId="56" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">9</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+              </connectionPointIn>
+            </rightPowerRail>
+          </LD>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>28d6ec59-c2ef-47ec-a5c7-a2700c5c4b0d</ObjectId>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Folder Name="syslog">
+          <Object Name="Facility" ObjectId="dca4d95a-4041-4ef1-ac61-4c557f5897ce" />
+          <Object Name="Severity" ObjectId="c5d97f8c-de07-4e3d-bb4d-aee229824a07" />
+          <Object Name="SpacePadDay" ObjectId="e75c6d76-f69d-407e-aebf-e606b70bed27" />
+          <Object Name="syslogMessage" ObjectId="1fa7320f-c4bd-426e-99cf-f4b726fd152f" />
+          <Object Name="Timestamp" ObjectId="c23e6e59-5d0f-42d0-8496-4718540ad8f1" />
+          <Object Name="ZeroPadInt" ObjectId="46407487-b642-427e-a5e6-cff6c411ed48" />
+          <Object Name="my_memcopy" ObjectId="b5cbb681-b67f-47d5-9d95-e08cd2905e30" />
+        </Folder>
+        <Object Name="SyslogExamples" ObjectId="28d6ec59-c2ef-47ec-a5c7-a2700c5c4b0d" />
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>
